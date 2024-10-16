@@ -255,6 +255,7 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
 
   // Set Config register to take into account the settings above
   uint16_t config = 0;
+  Serial.println("Config: ");
 
   // Config: Bus Voltage Range
   //  -bVoltRange: bus voltage range
@@ -263,12 +264,15 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
   switch (bVoltRange) {
     case 0:
       config = INA219_CONFIG_BVOLTAGERANGE_16V;
+      Serial.println("  Voltage: 16V");
     case 1:
       config = INA219_CONFIG_BVOLTAGERANGE_32V;
+      Serial.println("  Voltage: 32V");
       break;
 
     default:
-    config = INA219_CONFIG_BVOLTAGERANGE_32V;
+      config = INA219_CONFIG_BVOLTAGERANGE_32V;
+      Serial.println("Default voltage");
       break;
   }
 
@@ -281,22 +285,27 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
   switch (gain) {
     case 0:
       config = config | INA219_CONFIG_GAIN_1_40MV;
+      Serial.println(" Gain: 1, 40mV");
       break;
 
     case 1:
       config = config | INA219_CONFIG_GAIN_2_80MV;
+      Serial.println(" Gain: 2, 80mV");
       break;
 
     case 2:
       config = config | INA219_CONFIG_GAIN_4_160MV;
+      Serial.println(" Gain: 4, 160mV");
       break;
 
     case 3:
       config = config | INA219_CONFIG_GAIN_8_320MV;
+      Serial.println(" Gain: 8, 320mV");
       break;
 
     default:
       config = config | INA219_CONFIG_GAIN_8_320MV;
+      Serial.println(" Gain: default (8, 320mV)");
       break;
   }
 
@@ -316,50 +325,62 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
   switch (bADCRes)  {
     case 0:
       config = config | INA219_CONFIG_BADCRES_9BIT;
+      Serial.println(" bADCRes: 9 bit");
       break;
 
     case 1:
       config = config | INA219_CONFIG_BADCRES_10BIT;
+      Serial.println(" bADCRes: 10 bit");
       break;
 
     case 2:
       config = config | INA219_CONFIG_BADCRES_11BIT;
+      Serial.println(" bADCRes: 11 bit");
       break;
     
     case 3:
       config = config | INA219_CONFIG_BADCRES_12BIT;
+      Serial.println(" bADCRes: 12 bit");
       break;
 
     case 4:
       config = config | INA219_CONFIG_BADCRES_12BIT_2S_1060US;
+      Serial.println(" bADCRes: 12 bit, 2 samples");
       break;
 
     case 5:
       config = config | INA219_CONFIG_BADCRES_12BIT_4S_2130US;
+      Serial.println(" bADCRes: 12 bit, 4 samples");
       break;
 
     case 6:
       config = config | INA219_CONFIG_BADCRES_12BIT_8S_4260US;
+      Serial.println(" bADCRes: 12 bit, 8 samples");
       break;
 
     case 7:
       config = config | INA219_CONFIG_BADCRES_12BIT_16S_8510US;
+      Serial.println(" bADCRes: 12 bit, 16 samples");
       break;
 
     case 8:
       config = config | INA219_CONFIG_BADCRES_12BIT_32S_17MS;
+      Serial.println(" bADCRes: 12 bit, 32 samples");
       break;
 
     case 9:
       config = config | INA219_CONFIG_BADCRES_12BIT_64S_34MS;
+      Serial.println(" bADCRes: 12 bit, 64 samples");
       break;
 
     case 10:
       config = config | INA219_CONFIG_BADCRES_12BIT_128S_69MS;
+      Serial.println(" bADCRes: 12 bit, 128 samples");
       break;
     
     default:
       config = config | INA219_CONFIG_BADCRES_12BIT;
+      Serial.println(" bADCRes: default 12 bit");
       break;
   }
 
@@ -379,50 +400,62 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
   switch (sADCRes) {
     case 0:
       config = config | INA219_CONFIG_SADCRES_9BIT_1S_84US;
+      Serial.println(" sADCRes: 9 bit");
       break;
 
     case 1:
       config = config | INA219_CONFIG_SADCRES_10BIT_1S_148US;
+      Serial.println(" sADCRes: 10 bit");
       break;
 
     case 2:
       config = config | INA219_CONFIG_SADCRES_11BIT_1S_276US;
+      Serial.println(" sADCRes: 11 bit");
       break;
 
     case 3:
       config = config | INA219_CONFIG_SADCRES_12BIT_1S_532US;
+      Serial.println(" sADCRes: 12 bit");
       break;
 
     case 4:
       config = config | INA219_CONFIG_SADCRES_12BIT_2S_1060US;
+      Serial.println(" sADCRes: 12 bit, 2 samples");
       break;
 
     case 5:
       config = config | INA219_CONFIG_SADCRES_12BIT_4S_2130US;
+      Serial.println(" sADCRes: 12 bit, 4 samples");
       break;
 
     case 6:
       config = config | INA219_CONFIG_SADCRES_12BIT_8S_4260US;
+      Serial.println(" sADCRes: 12 bit, 8 samples");
       break;
 
     case 7:
       config = config | INA219_CONFIG_SADCRES_12BIT_16S_8510US;
+      Serial.println(" sADCRes: 12 bit, 16 samples");
       break;
 
     case 8:
       config = config | INA219_CONFIG_SADCRES_12BIT_32S_17MS;
+      Serial.println(" sADCRes: 12 bit, 32 samples");
       break;
 
     case 9:
       config = config | INA219_CONFIG_SADCRES_12BIT_64S_34MS;
+      Serial.println(" sADCRes: 12 bit, 64 samples");
       break;
 
     case 10:
       config = config | INA219_CONFIG_SADCRES_12BIT_128S_69MS;
+      Serial.println(" sADCRes: 12 bit, 128 samples");
       break;
 
     default:
       config = config | INA219_CONFIG_SADCRES_12BIT_1S_532US;
+      Serial.println(" sADCRes: default 12 bit");
       break;
   }
 
@@ -437,30 +470,37 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
   switch (mode) {
     case 1:
       config = config | INA219_CONFIG_MODE_SVOLT_TRIGGERED;
+      Serial.println(" mode: s trig");
       break;
 
     case 2:
       config = config | INA219_CONFIG_MODE_BVOLT_TRIGGERED;
+      Serial.println(" mode: b trig");
       break;
 
     case 3:
       config = config | INA219_CONFIG_MODE_SANDBVOLT_TRIGGERED;
+      Serial.println(" mode: s&b trig");
       break;
 
     case 5:
       config = config | INA219_CONFIG_MODE_SVOLT_CONTINUOUS;
+      Serial.println(" mode: s cont");
       break;
 
     case 6:
       config = config | INA219_CONFIG_MODE_BVOLT_CONTINUOUS;
+      Serial.println(" mode: b cont");
       break;
 
     case 7:
       config = config | INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
+      Serial.println(" mode: s&b cont");
       break;
     
     default:
       config = config | INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
+      Serial.println(" mode: default s&b cont");
       break;
   }
   
