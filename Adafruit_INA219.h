@@ -167,13 +167,13 @@ public:
   ~Adafruit_INA219();
   bool begin(TwoWire *theWire = &Wire);
   void setCalibration_manual(uint32_t calValue,
-                        uint32_t currentDivider_mA,
-                        float powerMultiplier_mW,
-                        int bVoltRange,
-                        int gain,
-                        int bADCRes,
-                        int sADCRes,
-                        int mode);
+                             uint32_t currentDivider_mA,
+                             float powerMultiplier_mW,
+                             int bVoltRange = 2,
+                             int gain =  3,
+                             int bADCRes = 3,
+                             int sADCRes = 3,
+                             int mode = 7);
   void setCalibration_32V_2A();
   void setCalibration_32V_1A();
   void setCalibration_16V_400mA();
@@ -181,6 +181,7 @@ public:
   float getShuntVoltage_mV();
   float getCurrent_mA();
   float getPower_mW();
+  int16_t getConfigRegister(bool print = true);
   void powerSave(bool on);
   bool success();
 
