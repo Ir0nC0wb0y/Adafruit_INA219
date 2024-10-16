@@ -169,11 +169,11 @@ public:
   void setCalibration_manual(uint32_t calValue,
                         uint32_t currentDivider_mA,
                         float powerMultiplier_mW,
-                        int bVoltRange = 2,
-                        int gain =  3,
-                        int bADCRes = 3,
-                        int sADCRes = 3,
-                        int mode = 7);
+                        int bVoltRange,
+                        int gain,
+                        int bADCRes,
+                        int sADCRes,
+                        int mode);
   void setCalibration_32V_2A();
   void setCalibration_32V_1A();
   void setCalibration_16V_400mA();
