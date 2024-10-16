@@ -464,6 +464,14 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
       break;
   }
   
+  uint16_t config_default = INA219_CONFIG_BVOLTAGERANGE_32V |
+                    INA219_CONFIG_GAIN_8_320MV | INA219_CONFIG_BADCRES_12BIT |
+                    INA219_CONFIG_SADCRES_12BIT_1S_532US |
+                    INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
+
+  Serial.print(Default config: ); Serial.println(config_default);
+  Serial.print(New config    : ); Serial.println(config);
+
   Adafruit_BusIO_Register config_reg =
       Adafruit_BusIO_Register(i2c_dev, INA219_REG_CONFIG, 2, MSBFIRST);
   _success = config_reg.write(config, 2);
@@ -486,8 +494,8 @@ void Adafruit_INA219::setCalibration_32V_2A() {
   // setting the VBUS_MAX to 16V instead of 32V, etc.
 
   // VBUS_MAX = 32V             (Assumes 32V, can also be set to 16V)
-  // VSHUNT_MAX = 0.32          (Assumes Gain 8, 320mV, can also be 0.16, 0.08,
-  // 0.04) RSHUNT = 0.1               (Resistor value in ohms)
+  // VSHUNT_MAX = 0.32          (Assumes Gain 8, 320mV, can also be 0.16, 0.08, 0.04)
+  // RSHUNT = 0.1               (Resistor value in ohms)
 
   // 1. Determine max possible current
   // MaxPossible_I = VSHUNT_MAX / RSHUNT
