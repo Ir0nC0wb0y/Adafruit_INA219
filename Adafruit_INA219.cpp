@@ -183,6 +183,24 @@ float Adafruit_INA219::getPower_mW() {
 }
 
 /*!
+ *  @brief  Gets the raw bus voltage (16-bit signed integer, so +-32767)
+ *  @return the raw bus voltage reading
+ */
+int16_t Adafruit_INA219::getConfigRegister(bool print) {
+  uint16_t value;
+
+  Adafruit_BusIO_Register config_reg =
+      Adafruit_BusIO_Register(i2c_dev, INA219_REG_CONFIG, 2, MSBFIRST);
+  _success = config_reg.read(&value);
+
+  if (print) {
+    Serial.print("Config Register: "); Serial.println((int16_t)value);
+  }
+  // Shift to the right 3 to drop CNVR and OVF and multiply by LSB
+  return (int16_t)(value);
+}
+
+/*!
  *  @brief  Configures to INA219 to be able to measure up to 32V and 2A
  *          of current.  Each unit of current corresponds to 100uA, and
  *          each unit of power corresponds to 2mW. Counter overflow
