@@ -280,23 +280,23 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
   //    -3(d): 320
   switch (gain) {
     case 0:
-      config = config | INA219_CONFIG_GAIN_8_40V;
+      config = config | INA219_CONFIG_GAIN_1_40MV;
       break;
 
     case 1:
-      config = config | INA219_CONFIG_GAIN_8_80V;
+      config = config | INA219_CONFIG_GAIN_2_80MV;
       break;
 
     case 2:
-      config = config | INA219_CONFIG_GAIN_8_160V;
+      config = config | INA219_CONFIG_GAIN_4_160MV;
       break;
 
     case 3:
-      config = config | INA219_CONFIG_GAIN_8_320V;
+      config = config | INA219_CONFIG_GAIN_8_320MV;
       break;
 
     default:
-      config = config | INA219_CONFIG_GAIN_8_320V;
+      config = config | INA219_CONFIG_GAIN_8_320MV;
       break;
   }
 
