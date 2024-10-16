@@ -169,7 +169,7 @@ public:
   void setCalibration_manual(uint32_t calValue,
                              uint32_t currentDivider_mA,
                              float powerMultiplier_mW,
-                             int bVoltRange = 2,
+                             int bVoltRange = 1,
                              int gain =  3,
                              int bADCRes = 3,
                              int sADCRes = 3,
@@ -177,6 +177,7 @@ public:
   void setCalibration_32V_2A();
   void setCalibration_32V_1A();
   void setCalibration_16V_400mA();
+  int16_t getShuntVoltage_raw();
   float getBusVoltage_V();
   float getShuntVoltage_mV();
   float getCurrent_mA();
@@ -200,7 +201,7 @@ private:
 
   void init();
   int16_t getBusVoltage_raw();
-  int16_t getShuntVoltage_raw();
+  //int16_t getShuntVoltage_raw();
   int16_t getCurrent_raw();
   int16_t getPower_raw();
 };

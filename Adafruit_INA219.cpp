@@ -187,6 +187,7 @@ float Adafruit_INA219::getPower_mW() {
  *  @return the raw bus voltage reading
  */
 int16_t Adafruit_INA219::getConfigRegister(bool print) {
+  //int16_t getConfigRegister(bool print = true);
   uint16_t value;
 
   Adafruit_BusIO_Register config_reg =
