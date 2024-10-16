@@ -469,8 +469,8 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
                     INA219_CONFIG_SADCRES_12BIT_1S_532US |
                     INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
 
-  Serial.print(Default config: ); Serial.println(config_default);
-  Serial.print(New config    : ); Serial.println(config);
+  Serial.print("Default config: "); Serial.println(config_default);
+  Serial.print("New config    : "); Serial.println(config);
 
   Adafruit_BusIO_Register config_reg =
       Adafruit_BusIO_Register(i2c_dev, INA219_REG_CONFIG, 2, MSBFIRST);
