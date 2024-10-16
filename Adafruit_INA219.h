@@ -166,6 +166,14 @@ public:
   Adafruit_INA219(uint8_t addr = INA219_ADDRESS);
   ~Adafruit_INA219();
   bool begin(TwoWire *theWire = &Wire);
+  void setCalibration_manual(uint32_t calValue,
+                        uint32_t currentDivider_mA,
+                        float powerMultiplier_mW,
+                        int bVoltRange = 2,
+                        int gain =  3,
+                        int bADCRes = 3,
+                        int sADCRes = 3,
+                        int mode = 7);
   void setCalibration_32V_2A();
   void setCalibration_32V_1A();
   void setCalibration_16V_400mA();
@@ -183,6 +191,7 @@ private:
 
   uint8_t ina219_i2caddr = -1;
   uint32_t ina219_calValue;
+  float ina219_CurrentLSB = 0;
   // The following multipliers are used to convert raw current and power
   // values to mA and mW, taking into account the current config settings
   uint32_t ina219_currentDivider_mA;

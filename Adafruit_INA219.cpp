@@ -189,6 +189,294 @@ float Adafruit_INA219::getPower_mW() {
  *          occurs at 3.2A.
  *  @note   These calculations assume a 0.1 ohm resistor is present
  */
+void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
+                                            uint32_t currentDivider_mA,
+                                            float powerMultiplier_mW,
+                                            int bVoltRange = 2,
+                                            int gain =  3,
+                                            int bADCRes = 3,
+                                            int sADCRes = 3,
+                                            int mode = 7) {
+  // Using this function requires understanding the calculations.
+  // The settings will be pushed to the sensor and used for internal adjustments.
+  // Inputs, defaults highlighted by (d):
+  //  -calValue: adjustment used by sensor
+  //  -currentDivider_mA: adjustment used by library to convert raw to [mA]
+  //  -powerMultiplier_mW: adjustment used by library to convert raw to [mW]
+  //  -bVoltRange: bus voltage range
+  //    -0: 16V
+  //    -1(d): 32V
+  //  -gain: range of expected shunt voltage, in mV
+  //    -0: 40, 80, 160, 320
+  //    -1: 80
+  //    -2: 160
+  //    -3(d): 320
+  //  -bADCRes: bus Voltage ADC resolution
+  //    - 0:  9 bit, 1 sample
+  //    - 1: 10 bit, 1 sample
+  //    - 2: 11 bit, 1 sample
+  //    - 3(d): 12 bit, 1 sample
+  //    - 4: 12 bit, 2 samples
+  //    - 5: 12 bit, 4 samples
+  //    - 6: 12 bit, 8 samples
+  //    - 7: 12 bit, 16 samples
+  //    - 8: 12 bit, 32 samples
+  //    - 9: 12 bit, 64 samples
+  //    -10: 12 bit, 128 samples
+  //  -sADCRes: shunt Voltage ADC resolution
+  //    - 0:  9 bit, 1 sample
+  //    - 1: 10 bit, 1 sample
+  //    - 2: 11 bit, 1 sample
+  //    - 3(d): 12 bit, 1 sample
+  //    - 4: 12 bit, 2 samples
+  //    - 5: 12 bit, 4 samples
+  //    - 6: 12 bit, 8 samples
+  //    - 7: 12 bit, 16 samples
+  //    - 8: 12 bit, 32 samples
+  //    - 9: 12 bit, 64 samples
+  //    -10: 12 bit, 128 samples
+  //  -mode: instructions for sensor operation
+  //    -1: shunt voltage, triggered
+  //    -2: bus voltage, triggered
+  //    -3: shunt and bus voltage, triggered
+  //    -5: shunt voltage, continuous
+  //    -6: bus voltage, continuous
+  //    -7(d): shunt and bus voltage, continuous
+
+  // Set multipliers to convert raw current/power values
+  ina219_calValue = calValue;
+  ina219_currentDivider_mA = currentDivider_mA; // Current LSB = 100uA per bit (1000/100 = 10)
+  ina219_powerMultiplier_mW = powerMultiplier_mW; // Power LSB = 1mW per bit (2/1)
+
+  // Set Calibration register to 'Cal' calculated above
+  Adafruit_BusIO_Register calibration_reg =
+      Adafruit_BusIO_Register(i2c_dev, INA219_REG_CALIBRATION, 2, MSBFIRST);
+  calibration_reg.write(ina219_calValue, 2);
+
+  // Set Config register to take into account the settings above
+  uint16_t config = 0;
+
+  // Config: Bus Voltage Range
+  //  -bVoltRange: bus voltage range
+  //    -1: 16V
+  //    -2(d): 32V
+  switch (bVoltRange) {
+    case 0:
+      config = INA219_CONFIG_BVOLTAGERANGE_16V;
+    case 1:
+      config = INA219_CONFIG_BVOLTAGERANGE_32V;
+      break;
+
+    default:
+    config = INA219_CONFIG_BVOLTAGERANGE_32V;
+      break;
+  }
+
+  // Config: Gain
+  //  -gain: range of expected shunt voltage, in mV
+  //    -0: 40, 80, 160, 320
+  //    -1: 80
+  //    -2: 160
+  //    -3(d): 320
+  switch (gain) {
+    case 0:
+      config = config | INA219_CONFIG_GAIN_8_40V;
+      break;
+
+    case 1:
+      config = config | INA219_CONFIG_GAIN_8_80V;
+      break;
+
+    case 2:
+      config = config | INA219_CONFIG_GAIN_8_160V;
+      break;
+
+    case 3:
+      config = config | INA219_CONFIG_GAIN_8_320V;
+      break;
+
+    default:
+      config = config | INA219_CONFIG_GAIN_8_320V;
+      break;
+  }
+
+  // Config: Bus ADC Resolution
+  //  -bADCRes: bus Voltage ADC resolution
+  //    - 0:  9 bit, 1 sample
+  //    - 1: 10 bit, 1 sample
+  //    - 2: 11 bit, 1 sample
+  //    - 3(d): 12 bit, 1 sample
+  //    - 4: 12 bit, 2 samples
+  //    - 5: 12 bit, 4 samples
+  //    - 6: 12 bit, 8 samples
+  //    - 7: 12 bit, 16 samples
+  //    - 8: 12 bit, 32 samples
+  //    - 9: 12 bit, 64 samples
+  //    -10: 12 bit, 128 samples
+  switch (bADCRes)  {
+    case 0:
+      config = config | INA219_CONFIG_BADCRES_9BIT;
+      break;
+
+    case 1:
+      config = config | INA219_CONFIG_BADCRES_10BIT;
+      break;
+
+    case 2:
+      config = config | INA219_CONFIG_BADCRES_11BIT;
+      break;
+    
+    case 3:
+      config = config | INA219_CONFIG_BADCRES_12BIT;
+      break;
+
+    case 4:
+      config = config | INA219_CONFIG_BADCRES_12BIT_2S_1060US;
+      break;
+
+    case 5:
+      config = config | INA219_CONFIG_BADCRES_12BIT_4S_2130US;
+      break;
+
+    case 6:
+      config = config | INA219_CONFIG_BADCRES_12BIT_8S_4260US;
+      break;
+
+    case 7:
+      config = config | INA219_CONFIG_BADCRES_12BIT_16S_8510US;
+      break;
+
+    case 8:
+      config = config | INA219_CONFIG_BADCRES_12BIT_32S_17MS;
+      break;
+
+    case 9:
+      config = config | INA219_CONFIG_BADCRES_12BIT_64S_34MS;
+      break;
+
+    case 10:
+      config = config | INA219_CONFIG_BADCRES_12BIT_128S_69MS;
+      break;
+    
+    default:
+      config = config | INA219_CONFIG_BADCRES_12BIT;
+      break;
+  }
+
+  // Config: Shunt ADC Resolution
+  //  -sADCRes: shunt Voltage ADC resolution
+  //    - 0:  9 bit, 1 sample
+  //    - 1: 10 bit, 1 sample
+  //    - 2: 11 bit, 1 sample
+  //    - 3(d): 12 bit, 1 sample
+  //    - 4: 12 bit, 2 samples
+  //    - 5: 12 bit, 4 samples
+  //    - 6: 12 bit, 8 samples
+  //    - 7: 12 bit, 16 samples
+  //    - 8: 12 bit, 32 samples
+  //    - 9: 12 bit, 64 samples
+  //    -10: 12 bit, 128 samples
+  switch (sADCRes) {
+    case 0:
+      config = config | INA219_CONFIG_SADCRES_9BIT_1S_84US;
+      break;
+
+    case 1:
+      config = config | INA219_CONFIG_SADCRES_10BIT_1S_148US;
+      break;
+
+    case 2:
+      config = config | INA219_CONFIG_SADCRES_11BIT_1S_276US;
+      break;
+
+    case 3:
+      config = config | INA219_CONFIG_SADCRES_12BIT_1S_532US;
+      break;
+
+    case 4:
+      config = config | INA219_CONFIG_SADCRES_12BIT_2S_1060US;
+      break;
+
+    case 5:
+      config = config | INA219_CONFIG_SADCRES_12BIT_4S_2130US;
+      break;
+
+    case 6:
+      config = config | INA219_CONFIG_SADCRES_12BIT_8S_4260US;
+      break;
+
+    case 7:
+      config = config | INA219_CONFIG_SADCRES_12BIT_16S_8510US;
+      break;
+
+    case 8:
+      config = config | INA219_CONFIG_SADCRES_12BIT_32S_17MS;
+      break;
+
+    case 9:
+      config = config | INA219_CONFIG_SADCRES_12BIT_64S_34MS;
+      break;
+
+    case 10:
+      config = config | INA219_CONFIG_SADCRES_12BIT_128S_69MS;
+      break;
+
+    default:
+      config = config | INA219_CONFIG_SADCRES_12BIT_1S_532US;
+      break;
+  }
+
+  // Config: Sensor Operating Mode
+  //  -mode: instructions for sensor operation
+  //    -1: shunt voltage, triggered
+  //    -2: bus voltage, triggered
+  //    -3: shunt and bus voltage, triggered
+  //    -5: shunt voltage, continuous
+  //    -6: bus voltage, continuous
+  //    -7: shunt and bus voltage, continuous
+  switch (mode) {
+    case 1:
+      config = config | INA219_CONFIG_MODE_SVOLT_TRIGGERED;
+      break;
+
+    case 2:
+      config = config | INA219_CONFIG_MODE_BVOLT_TRIGGERED;
+      break;
+
+    case 3:
+      config = config | INA219_CONFIG_MODE_SANDBVOLT_TRIGGERED;
+      break;
+
+    case 5:
+      config = config | INA219_CONFIG_MODE_SVOLT_CONTINUOUS;
+      break;
+
+    case 6:
+      config = config | INA219_CONFIG_MODE_BVOLT_CONTINUOUS;
+      break;
+
+    case 7:
+      config = config | INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
+      break;
+    
+    default:
+      config = config | INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
+      break;
+  }
+  
+  Adafruit_BusIO_Register config_reg =
+      Adafruit_BusIO_Register(i2c_dev, INA219_REG_CONFIG, 2, MSBFIRST);
+  _success = config_reg.write(config, 2);
+}
+
+
+/*!
+ *  @brief  Configures to INA219 to be able to measure up to 32V and 2A
+ *          of current.  Each unit of current corresponds to 100uA, and
+ *          each unit of power corresponds to 2mW. Counter overflow
+ *          occurs at 3.2A.
+ *  @note   These calculations assume a 0.1 ohm resistor is present
+ */
 void Adafruit_INA219::setCalibration_32V_2A() {
   // By default we use a pretty huge range for the input voltage,
   // which probably isn't the most appropriate choice for system
