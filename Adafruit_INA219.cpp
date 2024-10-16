@@ -534,7 +534,7 @@ void Adafruit_INA219::setCalibration_32V_2A() {
   // also need to change any relevant register settings, such as
   // setting the VBUS_MAX to 16V instead of 32V, etc.
 
-  Serial.println("Setting config for 32V @ 2A")
+  Serial.println("Setting config for 32V @ 2A");
 
   // VBUS_MAX = 32V             (Assumes 32V, can also be set to 16V)
   // VSHUNT_MAX = 0.32          (Assumes Gain 8, 320mV, can also be 0.16, 0.08, 0.04)
