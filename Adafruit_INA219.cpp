@@ -501,7 +501,7 @@ void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
     
     default:
       config = config | INA219_CONFIG_MODE_SANDBVOLT_CONTINUOUS;
-      Serial.println("  mode: default s&b cont");
+      Serial.println("   mode: default s&b cont");
       break;
   }
   
@@ -533,6 +533,8 @@ void Adafruit_INA219::setCalibration_32V_2A() {
   // are shown below if you want to change the settings.  You will
   // also need to change any relevant register settings, such as
   // setting the VBUS_MAX to 16V instead of 32V, etc.
+
+  Serial.println("Setting config for 32V @ 2A")
 
   // VBUS_MAX = 32V             (Assumes 32V, can also be set to 16V)
   // VSHUNT_MAX = 0.32          (Assumes Gain 8, 320mV, can also be 0.16, 0.08, 0.04)
