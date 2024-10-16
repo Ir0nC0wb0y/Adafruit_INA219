@@ -58,7 +58,7 @@ bool Adafruit_INA219::begin(TwoWire *theWire) {
   if (!i2c_dev->begin()) {
     return false;
   }
-  init();
+  //init();
   return true;
 }
 
@@ -192,11 +192,11 @@ float Adafruit_INA219::getPower_mW() {
 void Adafruit_INA219::setCalibration_manual(uint32_t calValue,
                                             uint32_t currentDivider_mA,
                                             float powerMultiplier_mW,
-                                            int bVoltRange = 2,
-                                            int gain =  3,
-                                            int bADCRes = 3,
-                                            int sADCRes = 3,
-                                            int mode = 7) {
+                                            int bVoltRange,
+                                            int gain,
+                                            int bADCRes,
+                                            int sADCRes,
+                                            int mode) {
   // Using this function requires understanding the calculations.
   // The settings will be pushed to the sensor and used for internal adjustments.
   // Inputs, defaults highlighted by (d):
